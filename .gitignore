@@ -40,4 +40,4 @@ yarn-debug.log*
 .yarn-integrity
 
 # Ignore environment values
-helm/config/*.yaml
+# helm/config/*.yaml

@@ -2,7 +2,7 @@
 set -x
 set -o pipefail
 
-kube_context=${cluster} make helm_diff
+make helm_diff kube_context=${cluster}
 
 deploy_exit=$?
 
