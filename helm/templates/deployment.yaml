@@ -64,23 +64,23 @@ spec:
               protocol: TCP
           env:
             {{- toYaml .Values.environment | nindent 12 }}
-          command:
-            - "sh"
-            - "-c"
-            - >
-              exec su-exec app bundle exec rails s -b 0.0.0.0
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 20
-            periodSeconds: 5
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 20
-            periodSeconds: 5
+          command: ["sleep", "infinity"]
+            # - "sh"
+            # - "-c"
+            # - >
+            #   exec su-exec app bundle exec rails s -b 0.0.0.0
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          #   initialDelaySeconds: 20
+          #   periodSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          #   initialDelaySeconds: 20
+          #   periodSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
