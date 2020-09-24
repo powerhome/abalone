@@ -4,7 +4,7 @@
 
 The Abalone project is a data tracking and analytics system aimed at storing and measuring data for population trends, mortality rates, and breeding programs. Designed as a multi-tenant application, Abalone will initially serve two stakeholders, the [Bodega Marine Laboratory](https://marinescience.ucdavis.edu/bml/about) at UC Davis and the [Puget Sound Restoration Fund](https://restorationfund.org/) in Washington State.  
 
-The Bodega Marine Laboratory's White Abalone captive breeding program is working to prevent the extinction of the [White Abalone](https://www.fisheries.noaa.gov/species/white-abalone) (Haliotis sorenseni), an endangered marine snail. White abalone are one of seven species found in California and are culturally significant to the native people of the area. White abalone were perilously overfished throughout the 20th century, resulting in a 99 percent population decrease by the end of the 1970s. This group is working to reverse their decline and have already seen some great success, they currently have more abalone in the lab than exist in the wild! 
+The Bodega Marine Laboratory's White Abalone captive breeding program is working to prevent the extinction of the [White Abalone](https://www.fisheries.noaa.gov/species/white-abalone) (Haliotis sorenseni), an endangered marine snail. White abalone are one of seven species found in California and are culturally significant to the native people of the area. White abalone were perilously overfished throughout the 20th century, resulting in a 99 percent population decrease by the end of the 1970s. This group is working to reverse their decline and have already seen some great success, they currently have more abalone in the lab than exist in the wild!
 
 The Puget Sound Restoration Fund works to raise and outplant hatchery-reared [Pinto Abalone](https://www.fisheries.noaa.gov/species/pinto-abalone) (Haliotis kamtschatkana), the only abalone species found in the Washington waters. This species has cultural and ecological significance, grazing rock surfaces and maintaining the health of rocky reef habitat and kelp beds. The Washington Department of Fish & Wildlife (WDFW) documented a ~98% decline from 1992 to 2017, leading the pinto abalone to be listed as a State endangered species in 2019.  
 
@@ -153,6 +153,43 @@ We are building an app which has the following capabilities:
 
 ## Deployment
 The application is currently deployed on Heroku at https://abalonerescue.herokuapp.com/.
+
+### Helm/Kubernetes
+The `Makefile` has targets that support deploying to Kubernetes. This requires building the Docker image and pushing to a repository that can accessed by your Kubernetes cluster. You will also need Helm in your Kubernetes cluster to support the deployment strategy:
+
+ - https://helm.sh/
+
+##### Build and Push the Docker Image
+You can run the following commands to build and push the image to either Docker hub or a repository of your choice. You can use the following Make variables:
+
+ - `docker_name`: What to name your docker image (default is `abalone`)
+ - `docker_tag`: What version to tag the image with when pushing
+ - `docker_repo`: Can be something like `quay.io/myorganization/`, or empty for Docker hub
+
+```sh
+$ make helm_docker_build
+$ make helm_docker_push
+```
+
+##### Deploy with Helm
+You can use Helm to deploy to Kubernetes. This assumes you have:
+
+ - A running Kubernetes cluster
+ - A locally configured Kubernetes config
+ - The `helm` binary on whichever machine you are deploying from
+
+The `helm/config` directory comes with an environment template. You can copy this file to `helm/config/<environment>.yaml` and update with values for the environment. Then you can run:
+
+```sh
+$ make helm_diff kube_context=My-Context
+$ make helm_upgrade kube_context=My-Context
+```
+
+If you want to tear down the environment:
+
+```sh
+$ make helm_uninstall kube_context=My-Context
+```
 
 ## And Don't Forget...
 

@@ -1,13 +1,21 @@
-# Helm deploy variables
+# Helm
+# kube_context: Which K8s cluster/context to deploy to
+# kube_namespace: Which namespace you want the app to live in
+# kube_environment: `development` or `production`
 kube_context=
 kube_namespace=abalone
 environment=development
 
+helm_bin=/usr/bin/env helm
 helm_args=--kube-context $(kube_context) -n $(kube_namespace)
+helm_release=abalone
 
-# Docker build/tag/push variables
+# Docker
+# docker_name: What name to give the image
+# docker_tag: The version tag you want to deploy
+# docker_repo: Where the image should be pulled from if not Docker Hub
 docker_name=abalone
-docker_tag=1.0.0
+docker_tag=1.0.2
 docker_repo=
 
 dev_env:
@@ -64,22 +72,28 @@ nuke:
 	docker-compose down --volumes
 
 _helm_dependencies:
-	/usr/bin/env helm \
+	$(helm_bin) \
 	dependency update helm/
 
 helm_diff: _helm_dependencies
-	/usr/bin/env helm \
+	$(helm_bin) \
 	$(helm_args) \
 	diff upgrade --allow-unreleased \
 	-f helm/config/$(environment).yaml \
-	abalone helm/
+	$(helm_release) helm/
 
 helm_upgrade: _helm_dependencies
-	/usr/bin/env helm \
+	$(helm_bin) \
 	$(helm_args) \
 	upgrade -i --create-namespace \
 	-f helm/config/$(environment).yaml \
-	abalone helm/
+	$(helm_release) helm/
+
+helm_uninstall: _helm_dependencies
+	$(helm_bin) \
+	$(helm_args) \
+	uninstall \
+	$(helm_release)
 
 # Build and push images for deploying into Kube with Helm
 
@@ -88,4 +102,4 @@ helm_docker_build:
 
 helm_docker_push:
 	/usr/bin/env docker tag ${docker_name} quay.io/powerhome/${docker_name}:${docker_tag}
-	/usr/bin/env docker push ${docker_repo}${docker_tag}:${docker_release}
+	/usr/bin/env docker push ${docker_repo}${docker_name}:${docker_tag}

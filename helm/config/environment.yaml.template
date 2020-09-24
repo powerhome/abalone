@@ -5,10 +5,9 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/powerhome/abalone
+  repository: ""
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.0.2"
+  tag: ""
 
 environment:
   - name: RAILS_ENV
@@ -18,60 +17,49 @@ environment:
   - name: DATABASE_URL
     value: "postgres://abalone:password@abalone-postgresql"
   - name: RAILS_HOST
-    value: "abalone-demo.powerapp.cloud"
+    value: "localhost"
 
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  # Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
   name: ""
 
 podAnnotations: {}
 
 podSecurityContext: {}
-  # fsGroup: 2000
 
 securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
 service:
   type: ClusterIP
   port: 3000
 
 ingress:
-  enabled: true
+  enabled: false
   annotations:
-    cert-manager.io/cluster-issuer: production-certs
+    cert-manager.io/cluster-issuer: ""
     kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: abalone-demo.powerapp.cloud
+    - host: localhost
       paths:
         - /
   tls:
    - secretName: abalone-tls
      hosts:
-       - abalone-demo.powerapp.cloud
+       - localhost
 
 resources:
   limits:
-    cpu: 1000m
-    memory: 768Mi
+    cpu: 100m
+    memory: 128Mi
   requests:
-    cpu: 500m
-    memory: 512Mi
+    cpu: 200m
+    memory: 256Mi
 
 autoscaling:
   enabled: false
@@ -89,12 +77,13 @@ affinity: {}
 # Values for the Postgres deployment
 postgresql:
   postgresqlUsername: abalone
-  postgresqlPassword: password
+  postgresqlPassword: ""
+  storageClass: ""
   image:
     tag: 11.7.0-debian-10-r9
   persistence:
     enabled: true
-    storageClass: staging-standard
+    storageClass: ""
     size: 1Gi
   initdbScripts:
     create_database.sql: |
