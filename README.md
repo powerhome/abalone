@@ -154,42 +154,8 @@ We are building an app which has the following capabilities:
 ## Deployment
 The application is currently deployed on Heroku at https://abalonerescue.herokuapp.com/.
 
-### Helm/Kubernetes
-The `Makefile` has targets that support deploying to Kubernetes. This requires building the Docker image and pushing to a repository that can accessed by your Kubernetes cluster. You will also need Helm in your Kubernetes cluster to support the deployment strategy:
-
- - https://helm.sh/
-
-##### Build and Push the Docker Image
-You can run the following commands to build and push the image to either Docker hub or a repository of your choice. You can use the following Make variables:
-
- - `docker_name`: What to name your docker image (default is `abalone`)
- - `docker_tag`: What version to tag the image with when pushing
- - `docker_repo`: Can be something like `quay.io/myorganization/`, or empty for Docker hub
-
-```sh
-$ make helm_docker_build
-$ make helm_docker_push
-```
-
-##### Deploy with Helm
-You can use Helm to deploy to Kubernetes. This assumes you have:
-
- - A running Kubernetes cluster
- - A locally configured Kubernetes config
- - The `helm` binary on whichever machine you are deploying from
-
-The `helm/config` directory comes with an environment template. You can copy this file to `helm/config/<environment>.yaml` and update with values for the environment. Then you can run:
-
-```sh
-$ make helm_diff kube_context=My-Context
-$ make helm_upgrade kube_context=My-Context
-```
-
-If you want to tear down the environment:
-
-```sh
-$ make helm_uninstall kube_context=My-Context
-```
+### [Kubernetes Deployment](KUBERNETES.md)
+For full information on how to deploy this application to Kubernetes please [read the guide](KUBERNETES.md).
 
 ## And Don't Forget...
 
