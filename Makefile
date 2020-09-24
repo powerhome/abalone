@@ -85,7 +85,7 @@ helm_diff: _helm_dependencies
 helm_upgrade: _helm_dependencies
 	$(helm_bin) \
 	$(helm_args) \
-	upgrade -i --create-namespace \
+	upgrade -i \
 	-f helm/config/$(environment).yaml \
 	$(helm_release) helm/
 
