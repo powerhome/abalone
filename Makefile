@@ -38,7 +38,7 @@ spec: schema_migrate
 	@echo -
 	@echo - Running specs!
 	@echo -
-	docker-compose run --rm rspec
+	docker-compose run -e RAILS_HOST=www.example.com --rm rspec
 
 lint:
 	@echo -
