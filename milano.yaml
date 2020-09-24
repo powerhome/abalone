@@ -1,0 +1,10 @@
+dependencies:
+  override: []
+
+deploy:
+  max_commits: # Automatically deploy all commits, no matter how many.
+  override:
+    - ./bin/milano/deployer bash -lc "environment=${ENVIRONMENT} cluster=app-beta-gm subcommand=sync bin/milano/deploy"
+
+status:
+  context: powerhome/deploy/prs
