@@ -6,6 +6,12 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  #config.hosts = ENV["RAILS_HOST"] || "localhost"
+  config.hosts = [
+    ENV["RAILS_HOST"],
+    "localhost"
+  ]
+
   config.cache_classes = true
 
   # Do not eager load code on boot. This avoids loading your whole application

@@ -1,0 +1,91 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ""
+  pullPolicy: IfNotPresent
+  tag: ""
+
+environment:
+  - name: RAILS_ENV
+    value: "development"
+  - name: ABALONE_DATABASE_HOSTNAME
+    value: "abalone-postgresql"
+  - name: DATABASE_URL
+    value: "postgres://abalone:password@abalone-postgresql"
+  - name: RAILS_HOST
+    value: "localhost"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: false
+  annotations:
+    cert-manager.io/cluster-issuer: ""
+    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: localhost
+      paths:
+        - /
+  tls:
+   - secretName: abalone-tls
+     hosts:
+       - localhost
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Values for the Postgres deployment
+postgresql:
+  postgresqlUsername: abalone
+  postgresqlPassword: ""
+  storageClass: ""
+  image:
+    tag: 11.7.0-debian-10-r9
+  persistence:
+    enabled: true
+    storageClass: ""
+    size: 1Gi
+  initdbScripts:
+    create_database.sql: |
+      CREATE DATABASE abalone_development;
+      CREATE DATABASE abalone_test;

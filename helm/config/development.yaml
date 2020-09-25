@@ -1,0 +1,102 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: quay.io/powerhome/abalone
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "1.0.3"
+
+environment:
+  - name: RAILS_ENV
+    value: "development"
+  - name: ABALONE_DATABASE_HOSTNAME
+    value: "abalone-postgresql"
+  - name: DATABASE_URL
+    value: "postgres://abalone:password@abalone-postgresql"
+  - name: RAILS_HOST
+    value: "abalone-demo.powerapp.cloud"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 3000
+
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: production-certs
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: abalone-demo.powerapp.cloud
+      paths:
+        - /
+  tls:
+   - secretName: abalone-tls
+     hosts:
+       - abalone-demo.powerapp.cloud
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Values for the Postgres deployment
+postgresql:
+  postgresqlUsername: abalone
+  postgresqlPassword: password
+  image:
+    tag: 11.7.0-debian-10-r9
+  persistence:
+    enabled: true
+    storageClass: staging-standard
+    size: 1Gi
+  initdbScripts:
+    create_database.sql: |
+      CREATE DATABASE abalone_development;
+      CREATE DATABASE abalone_test;
