@@ -15,7 +15,7 @@ helm_release=abalone
 # docker_tag: The version tag you want to deploy
 # docker_repo: Where the image should be pulled from if not Docker Hub
 docker_name=abalone
-docker_tag=1.0.2
+docker_tag=1.0.3
 docker_repo=
 
 dev_env:
