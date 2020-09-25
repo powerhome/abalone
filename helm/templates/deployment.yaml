@@ -64,6 +64,7 @@ spec:
               protocol: TCP
           env:
             {{- toYaml .Values.environment | nindent 12 }}
+          command: ['sleep','infinity']
           livenessProbe:
             httpGet:
               path: /
